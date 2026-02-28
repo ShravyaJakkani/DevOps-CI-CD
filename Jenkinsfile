@@ -33,17 +33,10 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                // Use workspace-local folders to avoid Minikube lock permission errors
-                withEnv([
-                    "MINIKUBE_HOME=$WORKSPACE/.minikube",
-                    "XDG_RUNTIME_DIR=$WORKSPACE/tmp"
-                ]) {
-                    sh 'mkdir -p $XDG_RUNTIME_DIR'
-                    sh 'minikube kubectl -- download' // optional: pre-download kubectl
-                    sh 'minikube kubectl -- apply -f k8s/'
-                    sh 'minikube kubectl -- rollout restart deployment my-k8s-app-deployment'
+                    sh 'kubectl apply -f k8s/'
+                    sh 'kubectl rollout restart deployment my-k8s-app-deployment'
                 }
             }
         }
     }
-}
+
